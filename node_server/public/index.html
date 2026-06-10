@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Predicción de Alquiler de Bicicletas</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; max-width: 900px; }
+    .menu { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+    .menu button { padding: 10px 18px; border: none; border-radius: 6px; background: #3d7aed; color: white; cursor: pointer; font-weight: 600; }
+    .menu button.active { background: #1f59d3; }
+    .section { display: none; margin-top: 12px; }
+    .section.active { display: block; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+    label { display: block; margin-top: 12px; }
+    input, select { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 6px; }
+    button[type="submit"] { margin-top: 16px; padding: 12px 20px; font-size: 16px; background: #3d7aed; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    pre { background: #f7f7f7; padding: 16px; border-radius: 10px; white-space: pre-wrap; word-break: break-word; }
+    .card { background: #fff; border: 1px solid #d8d8d8; border-radius: 12px; padding: 18px; }
+    .chart-bar { display: flex; align-items: center; margin-bottom: 8px; gap: 12px; }
+    .chart-bar span.label { width: 160px; font-size: 14px; color: #333; }
+    .chart-bar .bar { flex: 1; height: 16px; background: #eaeaea; border-radius: 8px; overflow: hidden; }
+    .chart-bar .bar::after { content: ''; display: block; height: 100%; background: #3d7aed; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    table th, table td { text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }
+    .hint { color: #555; font-size: 14px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Predicción de Alquiler de Bicicletas</h1>
+  <p>Selecciona una sección para consultar el modelo, el análisis y los gráficos.</p>
+
+  <div class="menu">
+    <button type="button" data-section="prediccion" class="active">Predicción</button>
+    <button type="button" data-section="graficos">Gráficos</button>
+    <button type="button" data-section="analisis">Análisis de variables</button>
+  </div>
+
+  <div id="prediccion" class="section active">
+    <div class="card">
+      <h2>Formulario de predicción</h2>
+      <form id="f">
+        <div class="grid">
+          <label>Temperatura (0-1): <input name="temp" value="0.5" step="0.01" type="number" /></label>
+          <label>Humedad (0-1): <input name="hum" value="0.5" step="0.01" type="number" /></label>
+          <label>Velocidad del viento (0-1): <input name="windspeed" value="0.1" step="0.01" type="number" /></label>
+          <label>Leaflets: <input name="leaflets" value="0" type="number" /></label>
+          <label>Temporada (1-4): <select name="season"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></label>
+          <label>Año (0=2011, 1=2012): <input name="yr" value="1" type="number" /></label>
+          <label>Festivo (0/1): <input name="holiday" value="0" type="number" /></label>
+          <label>Día laborable (0/1): <input name="workingday" value="1" type="number" /></label>
+          <label>Estado del tiempo (1-4): <input name="weathersit" value="1" type="number" /></label>
+          <label>Reducción de precio (0/1): <input name="price_reduction" value="0" type="number" /></label>
+          <label>Mes (1-12): <input name="mnth" value="6" type="number" /></label>
+          <label>Día de la semana (0-6): <input name="weekday" value="2" type="number" /></label>
+        </div>
+        <button type="submit">Predecir</button>
+      </form>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <h2>Resultado de la predicción</h2>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-top: 12px;">
+        <div style="background: #f0f8ff; border: 2px solid #3d7aed; border-radius: 10px; padding: 18px; text-align: center;">
+          <h3 style="margin: 0 0 10px 0; color: #1f59d3;">Casual</h3>
+          <p id="pred-casual" style="font-size: 28px; font-weight: bold; color: #3d7aed; margin: 10px 0;">-</p>
+          <button type="button" onclick="showDetail('casual')" style="background: #3d7aed; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">Ver detalles</button>
+        </div>
+        <div style="background: #f0f8ff; border: 2px solid #3d7aed; border-radius: 10px; padding: 18px; text-align: center;">
+          <h3 style="margin: 0 0 10px 0; color: #1f59d3;">Registered</h3>
+          <p id="pred-registered" style="font-size: 28px; font-weight: bold; color: #3d7aed; margin: 10px 0;">-</p>
+          <button type="button" onclick="showDetail('registered')" style="background: #3d7aed; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">Ver detalles</button>
+        </div>
+        <div style="background: #f0f8ff; border: 2px solid #3d7aed; border-radius: 10px; padding: 18px; text-align: center;">
+          <h3 style="margin: 0 0 10px 0; color: #1f59d3;">Total (cnt)</h3>
+          <p id="pred-cnt" style="font-size: 28px; font-weight: bold; color: #3d7aed; margin: 10px 0;">-</p>
+          <button type="button" onclick="showDetail('cnt')" style="background: #3d7aed; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">Ver detalles</button>
+        </div>
+      </div>
+      <div id="detail-area" style="margin-top: 20px; display: none;">
+        <h3 id="detail-title">Detalles</h3>
+        <div id="detail-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="graficos" class="section">
+    <div class="card">
+      <h2>Gráficos</h2>
+      <p class="hint">Después de realizar una predicción, aquí se mostrará un gráfico de la importancia de las variables relevantes.</p>
+      <div id="chart-area">
+        <p>Realiza una predicción para visualizar la importancia de las variables.</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top: 20px;">
+      <h3>Visualizaciones del dataset</h3>
+      <p class="hint">Estas gráficas se construyeron a partir de los datos de entrenamiento.</p>
+      <div class="grid" style="gap: 18px; margin-top: 12px;">
+        <div><h4>Histograma de cnt</h4><img src="/outputs/chart_cnt_hist.png" alt="Histograma cnt" style="width:100%; border-radius:10px; border:1px solid #ddd;"/></div>
+        <div><h4>Boxplot variables numéricas</h4><img src="/outputs/chart_numeric_box.png" alt="Boxplot numérico" style="width:100%; border-radius:10px; border:1px solid #ddd;"/></div>
+        <div><h4>Boxplot de cnt</h4><img src="/outputs/chart_cnt_box.png" alt="Boxplot cnt" style="width:100%; border-radius:10px; border:1px solid #ddd;"/></div>
+        <div><h4>cnt promedio por año</h4><img src="/outputs/chart_cnt_year.png" alt="cnt promedio por año" style="width:100%; border-radius:10px; border:1px solid #ddd;"/></div>
+        <div><h4>cnt promedio por clima</h4><img src="/outputs/chart_cnt_weather.png" alt="cnt promedio por clima" style="width:100%; border-radius:10px; border:1px solid #ddd;"/></div>
+        <div><h4>Matriz de correlación</h4><img src="/outputs/chart_correlation.png" alt="Correlación" style="width:100%; border-radius:10px; border:1px solid #ddd;"/></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="analisis" class="section">
+    <div class="card">
+      <h2>Análisis de variables</h2>
+      <h3>Limpieza de datos realizada</h3>
+      <ul>
+        <li>✓ <strong>Valores faltantes en season</strong>: 62 registros rellenados con la moda (temporada 1 = invierno).</li>
+        <li>✓ <strong>Valores faltantes en hum</strong>: 34 registros rellenados con la media (93.85%).</li>
+        <li>✓ <strong>Recálculo de atemp</strong>: Se recalcularon todos los valores usando la fórmula de Heat Index (sensación térmica) del NOAA con temp y hum.</li>
+        <li>✓ <strong>Corrección de weekday</strong>: 17 registros con weekday=-1 fueron asignados a 0.</li>
+      </ul>
+      <p><strong>Resultado:</strong> Dataset completamente limpio sin valores faltantes. 600 registros, 18 variables.</p>
+      <h3>Descripción de las variables</h3>
+      <ul>
+        <li><strong>season</strong>: temporada (1=invierno, 2=primavera, 3=verano, 4=otoño).</li>
+        <li><strong>yr</strong>: año (0=2011, 1=2012).</li>
+        <li><strong>mnth</strong>: mes (1-12).</li>
+        <li><strong>holiday</strong>: día festivo (0=no, 1=sí).</li>
+        <li><strong>weekday</strong>: día de la semana (0-6).</li>
+        <li><strong>workingday</strong>: día laboral (1) o fin de semana/festivo (0).</li>
+        <li><strong>weathersit</strong>: estado del clima (1=claro/pocas nubes, 2=neblina/nubes, 3=lluvia ligera, 4=lluvia fuerte/nieve).</li>
+        <li><strong>temp</strong>: temperatura normalizada.</li>
+        <li><strong>hum</strong>: humedad.</li>
+        <li><strong>windspeed</strong>: velocidad del viento.</li>
+        <li><strong>leaflets</strong>: folletos distribuidos.</li>
+        <li><strong>price_reduction</strong>: reducción de precio (0=no, 1=sí).</li>
+      </ul>
+      <p>El objetivo es estimar <strong>cnt</strong>, el total de alquileres de bicicletas.</p>
+    </div>
+  </div>
+
+  <script>
+    let currentPredictionData = null;
+
+    const menuButtons = document.querySelectorAll('.menu button');
+    const sections = document.querySelectorAll('.section');
+    function showSection(sectionId) {
+      sections.forEach(section => {
+        section.classList.toggle('active', section.id === sectionId);
+      });
+      menuButtons.forEach(button => {
+        button.classList.toggle('active', button.dataset.section === sectionId);
+      });
+    }
+    menuButtons.forEach(button => {
+      button.addEventListener('click', () => showSection(button.dataset.section));
+    });
+
+    function renderChart(importancias) {
+      const chartArea = document.getElementById('chart-area');
+      if (!importancias || !importancias.length) {
+        chartArea.innerHTML = '<p>Realiza una predicción para visualizar la importancia de las variables.</p>';
+        return;
+      }
+      const maxImport = Math.max(...importancias.map(i => i.importancia));
+      chartArea.innerHTML = importancias.slice(0, 8).map(item => {
+        const width = maxImport > 0 ? Math.max(10, (item.importancia / maxImport) * 100) : 0;
+        return `<div class="chart-bar"><span class="label">${item.nombre}</span><div class="bar" style="--w:${width}%"><span style="width:${width}%;"></span></div><span>${item.importancia.toFixed(4)}</span></div>`;
+      }).join('');
+    }
+
+    function showDetail(modelType) {
+      const detailArea = document.getElementById('detail-area');
+      const detailTitle = document.getElementById('detail-title');
+      const detailContent = document.getElementById('detail-content');
+      
+      detailTitle.textContent = `Detalles - ${modelType.toUpperCase()}`;
+      
+      if (!currentPredictionData || !currentPredictionData.desglose || !currentPredictionData.desglose[modelType]) {
+        detailContent.innerHTML = '<p>No hay detalles disponibles.</p>';
+        detailArea.style.display = 'block';
+        return;
+      }
+      
+      const importances = currentPredictionData.desglose[modelType];
+      let html = '<h4>Variables más importantes:</h4>';
+      html += '<div style="margin-top: 12px;">';
+      html += importances.slice(0, 10).map(item => {
+        const width = Math.max(5, (item.importancia / Math.max(...importances.map(i => i.importancia))) * 100);
+        return `<div class="chart-bar"><span class="label">${item.nombre}</span><div class="bar" style="--w:${width}%"><span style="width:${width}%;"></span></div><span>${item.importancia.toFixed(4)}</span></div>`;
+      }).join('');
+      html += '</div>';
+      
+      detailContent.innerHTML = html;
+      detailArea.style.display = 'block';
+      renderChart(importances);
+    }
+
+    function renderPrediction(data) {
+      currentPredictionData = data;
+      
+      // Mostrar las 3 predicciones
+      document.getElementById('pred-casual').textContent = data.predicciones.casual.toFixed(0);
+      document.getElementById('pred-registered').textContent = data.predicciones.registered.toFixed(0);
+      document.getElementById('pred-cnt').textContent = data.predicciones.cnt.toFixed(0);
+      
+      // Mostrar resumen en console
+      const lines = [];
+      lines.push('=== PREDICCIONES ===');
+      lines.push(`Casual: ${data.predicciones.casual.toFixed(2)}`);
+      lines.push(`Registered: ${data.predicciones.registered.toFixed(2)}`);
+      lines.push(`Total (cnt): ${data.predicciones.cnt.toFixed(2)}`);
+      console.log(lines.join('\n'));
+      
+      // Mostrar primer detalle por defecto
+      showDetail('casual');
+      showSection('prediccion');
+    }
+
+    document.getElementById('f').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const obj = {};
+      for (const [k, v] of form.entries()) {
+        obj[k] = Number(v);
+      }
+      document.getElementById('pred-casual').textContent = 'Calculando...';
+      document.getElementById('pred-registered').textContent = '...';
+      document.getElementById('pred-cnt').textContent = '...';
+      
+      try {
+        const res = await fetch('/predict', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(obj)
+        });
+        const text = await res.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (err) {
+          document.getElementById('detail-content').textContent = 'Respuesta inválida del servidor:\n' + text;
+          document.getElementById('detail-area').style.display = 'block';
+          return;
+        }
+        if (data.error) {
+          document.getElementById('detail-content').textContent = 'Error: ' + data.error + (data.msg ? '\n' + data.msg : '');
+          document.getElementById('detail-area').style.display = 'block';
+          return;
+        }
+        renderPrediction(data);
+      } catch (err) {
+        document.getElementById('detail-content').textContent = 'Error de red o servidor: ' + err;
+        document.getElementById('detail-area').style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

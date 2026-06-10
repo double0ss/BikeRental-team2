@@ -1,0 +1,73 @@
+{
+  "targets": [
+    "casual",
+    "registered",
+    "cnt"
+  ],
+  "feature_names": [
+    "temp",
+    "hum",
+    "windspeed",
+    "leaflets",
+    "season",
+    "yr",
+    "holiday",
+    "workingday",
+    "weathersit",
+    "atemp",
+    "price_reduction",
+    "mnth_sin",
+    "mnth_cos",
+    "weekday_sin",
+    "weekday_cos",
+    "is_weekend"
+  ],
+  "numeric_features": [
+    "temp",
+    "hum",
+    "windspeed",
+    "leaflets"
+  ],
+  "categorical_features": [
+    "season",
+    "yr",
+    "holiday",
+    "workingday",
+    "weathersit",
+    "atemp",
+    "price_reduction",
+    "mnth_sin",
+    "mnth_cos",
+    "weekday_sin",
+    "weekday_cos",
+    "is_weekend"
+  ],
+  "train_size": 480,
+  "test_size": 120,
+  "results": {
+    "casual": {
+      "mae_test": 920.4970902777779,
+      "rmse_test": 4879.904850035145,
+      "r2_test": 0.04791962720511411,
+      "mae_train": 148.043317639652,
+      "rmse_train": 758.5934034572524,
+      "r2_train": 0.8767671552337468
+    },
+    "registered": {
+      "mae_test": 1222.1545,
+      "rmse_test": 1344.528997927961,
+      "r2_test": 0.3072806808353401,
+      "mae_train": 150.41873263888888,
+      "rmse_train": 202.05946759970993,
+      "r2_train": 0.9779704599665102
+    },
+    "cnt": {
+      "mae_test": 1858.1036820862003,
+      "rmse_test": 5279.841331243,
+      "r2_test": 0.050096873327954206,
+      "mae_train": 342.863692542833,
+      "rmse_train": 1246.7720298371,
+      "r2_train": 0.8001824633442914
+    }
+  }
+}
