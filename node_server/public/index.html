@@ -23,6 +23,136 @@
     table { width: 100%; border-collapse: collapse; margin-top: 12px; }
     table th, table td { text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }
     .hint { color: #555; font-size: 14px; margin-top: 10px; }
+    .date-card { grid-column: 1 / -1; background: #f0f8ff; border: 1px solid #b8d4f8; border-radius: 10px; padding: 14px; }
+    .date-card input[type="date"] { font-size: 16px; cursor: pointer; }
+    .derived-fields { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .derived-fields span { background: #fff; border: 1px solid #d0e3ff; border-radius: 6px; padding: 6px 10px; font-size: 13px; color: #333; }
+    .derived-fields strong { color: #1f59d3; }
+    .toggle-field {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 1px solid #d8d8d8;
+      border-radius: 10px;
+      background: #fafafa;
+    }
+    .toggle-field .toggle-text { flex: 1; font-weight: 600; color: #333; }
+    .toggle-field .toggle-state { min-width: 28px; font-size: 13px; color: #666; text-align: right; }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 52px;
+      height: 30px;
+      flex-shrink: 0;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      margin: 0;
+      padding: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #cfd8ea;
+      border-radius: 999px;
+      transition: background 0.2s ease;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      height: 24px;
+      width: 24px;
+      left: 3px;
+      bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+    .toggle-switch input:checked + .toggle-slider {
+      background: #3d7aed;
+    }
+    .toggle-switch input:focus-visible + .toggle-slider {
+      outline: 2px solid #1f59d3;
+      outline-offset: 2px;
+    }
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(22px);
+    }
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+      margin-top: 12px;
+    }
+    .chart-item {
+      position: relative;
+    }
+    .chart-item h4 {
+      margin: 0 0 8px 0;
+      font-size: 15px;
+    }
+    .chart-item .chart-thumb {
+      overflow: hidden;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      background: #fafafa;
+    }
+    .chart-item .chart-thumb {
+      cursor: zoom-in;
+    }
+    .chart-item .chart-thumb img {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: opacity 0.2s ease;
+    }
+    .chart-item .chart-thumb:hover img {
+      opacity: 0.92;
+    }
+    .chart-zoom-layer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(15, 23, 42, 0.82);
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      cursor: zoom-out;
+    }
+    .chart-zoom-layer.open {
+      display: flex;
+    }
+    .chart-zoom-layer img {
+      max-width: min(96vw, 1100px);
+      max-height: 92vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+      background: #fff;
+      padding: 8px;
+    }
+    .chart-zoom-caption {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #e2e8f0;
+      font-size: 14px;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 8px 16px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -39,19 +169,56 @@
     <div class="card">
       <h2>Formulario de predicción</h2>
       <form id="f">
+        <label style="display:block; margin-bottom: 16px;">Modelo de predicción:
+          <select id="model_id" name="model_id" required>
+            <option value="default">Cargando modelos…</option>
+          </select>
+          <span id="model-description" class="hint" style="display:block; margin-top:6px;"></span>
+        </label>
         <div class="grid">
-          <label>Temperatura (0-1): <input name="temp" value="0.5" step="0.01" type="number" /></label>
-          <label>Humedad (0-1): <input name="hum" value="0.5" step="0.01" type="number" /></label>
-          <label>Velocidad del viento (0-1): <input name="windspeed" value="0.1" step="0.01" type="number" /></label>
+          <div class="date-card">
+            <label>Fecha a predecir:
+              <input id="prediction_date" name="prediction_date" type="date" required />
+            </label>
+            <p class="hint">Selecciona cualquier fecha. Se calculan automáticamente día, mes, año, temporada y día laborable. Para años fuera de 2011–2012 se aplica una extrapolación amortiguada de la tendencia anual.</p>
+            <div id="derived-date-fields" class="derived-fields"></div>
+          </div>
+          <label>Temperatura (°C): <input name="temp" value="24.8" step="0.1" type="number" /></label>
+          <label>Humedad (%): <input name="hum" value="53" step="0.1" type="number" /></label>
+          <label>Velocidad del viento (normalizada): <input name="windspeed" value="0.25" step="0.01" type="number" /></label>
           <label>Leaflets: <input name="leaflets" value="0" type="number" /></label>
-          <label>Temporada (1-4): <select name="season"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></label>
-          <label>Año (0=2011, 1=2012): <input name="yr" value="1" type="number" /></label>
-          <label>Festivo (0/1): <input name="holiday" value="0" type="number" /></label>
-          <label>Día laborable (0/1): <input name="workingday" value="1" type="number" /></label>
-          <label>Estado del tiempo (1-4): <input name="weathersit" value="1" type="number" /></label>
-          <label>Reducción de precio (0/1): <input name="price_reduction" value="0" type="number" /></label>
-          <label>Mes (1-12): <input name="mnth" value="6" type="number" /></label>
-          <label>Día de la semana (0-6): <input name="weekday" value="2" type="number" /></label>
+          <label>Estado del tiempo (1-4):
+            <select name="weathersit">
+              <option value="1">1 - Despejado</option>
+              <option value="2">2 - Nublado</option>
+              <option value="3">3 - Lluvia ligera</option>
+              <option value="4">4 - Lluvia fuerte</option>
+            </select>
+          </label>
+          <div class="toggle-field-wrapper">
+            <span class="toggle-text" style="display:block; margin-top:12px; font-weight:600;">Reducción de precio</span>
+            <div class="toggle-field">
+              <span class="toggle-text">¿Hay promoción de precio?</span>
+              <label class="toggle-switch" aria-label="Reducción de precio">
+                <input id="price_reduction_toggle" type="checkbox" />
+                <span class="toggle-slider"></span>
+              </label>
+              <span id="price_reduction_state" class="toggle-state">No</span>
+              <input id="price_reduction" name="price_reduction" type="hidden" value="0" />
+            </div>
+          </div>
+          <div class="toggle-field-wrapper">
+            <span class="toggle-text" style="display:block; margin-top:12px; font-weight:600;">¿Es festivo?</span>
+            <div class="toggle-field">
+              <span class="toggle-text">¿El día es festivo?</span>
+              <label class="toggle-switch" aria-label="Día festivo">
+                <input id="holiday_toggle" type="checkbox" />
+                <span class="toggle-slider"></span>
+              </label>
+              <span id="holiday_state" class="toggle-state">No</span>
+              <input id="holiday" name="holiday" type="hidden" value="0" />
+            </div>
+          </div>
         </div>
         <button type="submit">Predecir</button>
       </form>
@@ -59,6 +226,9 @@
 
     <div class="card" style="margin-top: 20px;">
       <h2>Resultado de la predicción</h2>
+      <p id="pred-modelo" class="hint" style="margin-bottom: 8px; color: #1f59d3; font-weight: 600;"></p>
+      <p id="pred-fecha" class="hint" style="margin-bottom: 8px;"></p>
+      <p id="pred-aviso" class="hint" style="margin-bottom: 12px; color: #b45309;"></p>
       <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-top: 12px;">
         <div style="background: #f0f8ff; border: 2px solid #3d7aed; border-radius: 10px; padding: 18px; text-align: center;">
           <h3 style="margin: 0 0 10px 0; color: #1f59d3;">Casual</h3>
@@ -93,14 +263,58 @@
     </div>
     <div class="card" style="margin-top: 20px;">
       <h3>Visualizaciones del dataset</h3>
-      <p class="hint">Estas gráficas se construyeron a partir de los datos de entrenamiento.</p>
-      <div class="grid" style="gap: 18px; margin-top: 12px;">
-        <div><h4>Histograma de cnt</h4><img src="/outputs/chart_cnt_hist.png" alt="Histograma cnt" style="width:100%; border-radius:10px; border:1px solid #ddd;"/></div>
-        <div><h4>Boxplot variables numéricas</h4><img src="/outputs/chart_numeric_box.png" alt="Boxplot numérico" style="width:100%; border-radius:10px; border:1px solid #ddd;"/></div>
-        <div><h4>Boxplot de cnt</h4><img src="/outputs/chart_cnt_box.png" alt="Boxplot cnt" style="width:100%; border-radius:10px; border:1px solid #ddd;"/></div>
-        <div><h4>cnt promedio por año</h4><img src="/outputs/chart_cnt_year.png" alt="cnt promedio por año" style="width:100%; border-radius:10px; border:1px solid #ddd;"/></div>
-        <div><h4>cnt promedio por clima</h4><img src="/outputs/chart_cnt_weather.png" alt="cnt promedio por clima" style="width:100%; border-radius:10px; border:1px solid #ddd;"/></div>
-        <div><h4>Matriz de correlación</h4><img src="/outputs/chart_correlation.png" alt="Correlación" style="width:100%; border-radius:10px; border:1px solid #ddd;"/></div>
+      <p class="hint">Haz clic en un gráfico para ampliarlo. Clic en el fondo oscuro o tecla Escape para cerrar.</p>
+      <div class="charts-grid">
+        <div class="chart-item">
+          <h4>Histograma de cnt</h4>
+          <div class="chart-thumb"><img src="/outputs/chart_cnt_hist.png" alt="Histograma cnt" /></div>
+          <div class="chart-zoom-layer"><img src="/outputs/chart_cnt_hist.png" alt="" /><span class="chart-zoom-caption">Histograma de cnt</span></div>
+        </div>
+        <div class="chart-item">
+          <h4>Boxplot variables numéricas</h4>
+          <div class="chart-thumb"><img src="/outputs/chart_numeric_box.png" alt="Boxplot numérico" /></div>
+          <div class="chart-zoom-layer"><img src="/outputs/chart_numeric_box.png" alt="" /><span class="chart-zoom-caption">Boxplot variables numéricas</span></div>
+        </div>
+        <div class="chart-item">
+          <h4>Boxplot de cnt</h4>
+          <div class="chart-thumb"><img src="/outputs/chart_cnt_box.png" alt="Boxplot cnt" /></div>
+          <div class="chart-zoom-layer"><img src="/outputs/chart_cnt_box.png" alt="" /><span class="chart-zoom-caption">Boxplot de cnt</span></div>
+        </div>
+        <div class="chart-item">
+          <h4>cnt promedio por año</h4>
+          <div class="chart-thumb"><img src="/outputs/chart_cnt_year.png" alt="cnt promedio por año" /></div>
+          <div class="chart-zoom-layer"><img src="/outputs/chart_cnt_year.png" alt="" /><span class="chart-zoom-caption">cnt promedio por año</span></div>
+        </div>
+        <div class="chart-item">
+          <h4>cnt promedio por clima</h4>
+          <div class="chart-thumb"><img src="/outputs/chart_cnt_weather.png" alt="cnt promedio por clima" /></div>
+          <div class="chart-zoom-layer"><img src="/outputs/chart_cnt_weather.png" alt="" /><span class="chart-zoom-caption">cnt promedio por clima</span></div>
+        </div>
+        <div class="chart-item">
+          <h4>Matriz de correlación</h4>
+          <div class="chart-thumb"><img src="/outputs/chart_correlation.png" alt="Correlación" /></div>
+          <div class="chart-zoom-layer"><img src="/outputs/chart_correlation.png" alt="" /><span class="chart-zoom-caption">Matriz de correlación</span></div>
+        </div>
+        <div class="chart-item">
+          <h4>Test externo: real vs predicho</h4>
+          <div class="chart-thumb"><img src="/outputs/test_predictions_vs_actual.png" alt="Test predicciones" /></div>
+          <div class="chart-zoom-layer"><img src="/outputs/test_predictions_vs_actual.png" alt="" /><span class="chart-zoom-caption">Test externo: real vs predicho</span></div>
+        </div>
+        <div class="chart-item">
+          <h4>RMSE por segmento (test)</h4>
+          <div class="chart-thumb"><img src="/outputs/test_error_by_segment.png" alt="Error por segmento" /></div>
+          <div class="chart-zoom-layer"><img src="/outputs/test_error_by_segment.png" alt="" /><span class="chart-zoom-caption">RMSE por segmento (test)</span></div>
+        </div>
+        <div class="chart-item">
+          <h4>Análisis sesgos y outliers</h4>
+          <div class="chart-thumb"><img src="/outputs/bias_outlier_analysis.png" alt="Sesgos y outliers" /></div>
+          <div class="chart-zoom-layer"><img src="/outputs/bias_outlier_analysis.png" alt="" /><span class="chart-zoom-caption">Análisis sesgos y outliers</span></div>
+        </div>
+        <div class="chart-item">
+          <h4>Sesgo categórico</h4>
+          <div class="chart-thumb"><img src="/outputs/categorical_bias.png" alt="Sesgo categórico" /></div>
+          <div class="chart-zoom-layer"><img src="/outputs/categorical_bias.png" alt="" /><span class="chart-zoom-caption">Sesgo categórico</span></div>
+        </div>
       </div>
     </div>
   </div>
@@ -108,35 +322,244 @@
   <div id="analisis" class="section">
     <div class="card">
       <h2>Análisis de variables</h2>
-      <h3>Limpieza de datos realizada</h3>
-      <ul>
-        <li>✓ <strong>Valores faltantes en season</strong>: 62 registros rellenados con la moda (temporada 1 = invierno).</li>
-        <li>✓ <strong>Valores faltantes en hum</strong>: 34 registros rellenados con la media (93.85%).</li>
-        <li>✓ <strong>Recálculo de atemp</strong>: Se recalcularon todos los valores usando la fórmula de Heat Index (sensación térmica) del NOAA con temp y hum.</li>
-        <li>✓ <strong>Corrección de weekday</strong>: 17 registros con weekday=-1 fueron asignados a 0.</li>
+      <h3>Modelo refinado (test externo)</h3>
+      <ul id="refined-metrics">
+        <li><strong>Algoritmo:</strong> <span id="metric-algorithm">Cargando…</span></li>
+        <li><strong>Experimento:</strong> <span id="metric-experiment">—</span></li>
+        <li><strong>Entrenamiento:</strong> 600 registros en <code>data/BikeRentalDaily_train.csv</code>.</li>
+        <li><strong>Test externo:</strong> 131 registros en <code>tests/BikeRentalDaily_test.csv</code> (1 fecha solapada excluida).</li>
+        <li id="metric-global">Cargando métricas…</li>
+        <li id="metric-robust">—</li>
+        <li id="metric-segments">—</li>
+        <li id="metric-gap">—</li>
       </ul>
-      <p><strong>Resultado:</strong> Dataset completamente limpio sin valores faltantes. 600 registros, 18 variables.</p>
-      <h3>Descripción de las variables</h3>
+      <p id="metric-limitations" style="margin-top:0.75rem;color:#555;font-size:0.95rem;">
+        <strong>Limitaciones:</strong> los días con demanda extrema (&gt;15.000 alquileres) tienen mayor incertidumbre;
+        el outlier del test (cnt ≈ 32.472) sigue siendo difícil de predecir.
+      </p>
+      <h3>Sesgos y outliers detectados (pre-entrenamiento)</h3>
       <ul>
-        <li><strong>season</strong>: temporada (1=invierno, 2=primavera, 3=verano, 4=otoño).</li>
-        <li><strong>yr</strong>: año (0=2011, 1=2012).</li>
-        <li><strong>mnth</strong>: mes (1-12).</li>
-        <li><strong>holiday</strong>: día festivo (0=no, 1=sí).</li>
-        <li><strong>weekday</strong>: día de la semana (0-6).</li>
-        <li><strong>workingday</strong>: día laboral (1) o fin de semana/festivo (0).</li>
-        <li><strong>weathersit</strong>: estado del clima (1=claro/pocas nubes, 2=neblina/nubes, 3=lluvia ligera, 4=lluvia fuerte/nieve).</li>
-        <li><strong>temp</strong>: temperatura normalizada.</li>
-        <li><strong>hum</strong>: humedad.</li>
-        <li><strong>windspeed</strong>: velocidad del viento.</li>
-        <li><strong>leaflets</strong>: folletos distribuidos.</li>
-        <li><strong>price_reduction</strong>: reducción de precio (0=no, 1=sí).</li>
+        <li><strong>cnt:</strong> 4 outliers extremos (IQR) en train — picos de 32k–53k alquileres; asimetría alta (skew ≈ 7.9).</li>
+        <li><strong>Sesgo temporal:</strong> demanda máxima en septiembre, mínima en enero; variación estacional marcada.</li>
+        <li><strong>weathersit:</strong> ~62% días despejados; weathersit=4 ausente en train.</li>
+        <li><strong>workingday:</strong> ~68% días laborables.</li>
+        <li><strong>price_reduction:</strong> solo ~15% días con promoción.</li>
+        <li><strong>windspeed:</strong> 16 outliers IQR por cola izquierda (valores muy bajos).</li>
       </ul>
-      <p>El objetivo es estimar <strong>cnt</strong>, el total de alquileres de bicicletas.</p>
+      <p><strong>Tratamiento aplicado:</strong> refinamiento iterativo (<code>refine_model.py</code>), transformación log1p(cnt), normalización StandardScaler, features cíclicas + heat index, imputación con estadísticas solo de train.</p>
+      <h3>Limpieza de datos</h3>
+      <ul>
+        <li><strong>season</strong>: imputación por mes (1=invierno, 2=primavera, 3=verano, 4=otoño).</li>
+        <li><strong>hum / windspeed</strong>: imputación por mediana; windspeed=-1 tratado como nulo.</li>
+        <li><strong>weekday=-1</strong>: corregido desde la fecha real.</li>
+        <li><strong>Excluidas del modelo:</strong> instant, casual, registered, atemp (multicolinealidad/fuga).</li>
+      </ul>
+      <h3>Descripción de variables (especificación UCI)</h3>
+      <ul>
+        <li><strong>season</strong>: 1=invierno, 2=primavera, 3=verano, 4=otoño.</li>
+        <li><strong>yr</strong>: 0=2011, 1=2012 (extrapolación amortiguada para otras fechas).</li>
+        <li><strong>mnth</strong>: mes (1–12).</li>
+        <li><strong>holiday</strong>: festivo (0/1).</li>
+        <li><strong>weekday</strong>: día de la semana (0=domingo … 6=sábado).</li>
+        <li><strong>workingday</strong>: 1 si no es fin de semana ni festivo.</li>
+        <li><strong>weathersit</strong>: 1=despejado, 2=nublado, 3=lluvia ligera, 4=lluvia fuerte/nieve.</li>
+        <li><strong>temp, hum, windspeed, leaflets, price_reduction</strong>: variables meteorológicas y promocionales.</li>
+        <li><strong>cnt</strong>: total de alquileres (casual + registered).</li>
+      </ul>
+      <p><strong>Normalización:</strong> todas las variables continuas se escalan (media 0, desv. 1) antes del entrenamiento; las dummies categóricas (season, weathersit) no se escalan.</p>
     </div>
   </div>
 
   <script>
     let currentPredictionData = null;
+
+    const BASE_YEAR = 2011;
+    const WEEKDAY_NAMES = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const SEASON_NAMES = { 1: 'Invierno', 2: 'Primavera', 3: 'Verano', 4: 'Otoño' };
+
+    function todayIsoDate() {
+      const now = new Date();
+      const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+      return local.toISOString().slice(0, 10);
+    }
+
+    document.getElementById('prediction_date').value = todayIsoDate();
+
+    const MODEL_STORAGE_KEY = 'bikerental_selected_model';
+
+    function updateModelDescription() {
+      const select = document.getElementById('model_id');
+      const opt = select.options[select.selectedIndex];
+      const desc = opt?.dataset?.description || '';
+      document.getElementById('model-description').textContent = desc;
+      if (select.value) {
+        localStorage.setItem(MODEL_STORAGE_KEY, select.value);
+      }
+    }
+
+    async function loadModelOptions() {
+      const select = document.getElementById('model_id');
+      try {
+        const res = await fetch('/models');
+        if (!res.ok) throw new Error('No se pudo cargar la lista de modelos');
+        const data = await res.json();
+        const models = data.models || [];
+        const saved = localStorage.getItem(MODEL_STORAGE_KEY);
+        select.innerHTML = models.map(m => {
+          const mae = m.test_mae != null ? ` · MAE test ≈ ${Math.round(m.test_mae)}` : '';
+          const desc = (m.description || '') + mae;
+          return `<option value="${m.id}" data-description="${desc.replace(/"/g, '&quot;')}"${m.is_default ? ' data-default="1"' : ''}>${m.label}</option>`;
+        }).join('');
+
+        const defaultId = data.default_id || 'default';
+        if (saved && [...select.options].some(o => o.value === saved)) {
+          select.value = saved;
+        } else {
+          select.value = defaultId;
+        }
+        updateModelDescription();
+      } catch (err) {
+        select.innerHTML = '<option value="default">Modelo principal (default)</option>';
+        document.getElementById('model-description').textContent =
+          'No se pudo cargar el catálogo; se usará el modelo en producción.';
+      }
+    }
+
+    document.getElementById('model_id').addEventListener('change', updateModelDescription);
+    loadModelOptions();
+
+    async function loadRefinedMetrics() {
+      try {
+        const res = await fetch('/outputs/test_metrics.json');
+        if (!res.ok) return;
+        const data = await res.json();
+        const g = data.global || {};
+        const seg = data.segments || {};
+        const wd = (seg.workingday || []).find(s => s.value === 0);
+        const wdWork = (seg.workingday || []).find(s => s.value === 1);
+        const yr2012 = (seg.yr || []).find(s => s.value === 1);
+
+        const isEnsemble = data.model_type === 'ensemble';
+        const algo = (data.model_type || 'gradient_boosting').replace(/_/g, ' ');
+        document.getElementById('metric-algorithm').textContent = isEnsemble
+          ? 'Ensemble (' + (data.experiment || 'combinación') + ')'
+          : algo.charAt(0).toUpperCase() + algo.slice(1) + ' + StandardScaler';
+        document.getElementById('metric-experiment').textContent =
+          data.experiment || data.feature_config?.name || '—';
+
+        document.getElementById('metric-global').innerHTML =
+          '<strong>MAE test:</strong> ' + (g.mae?.toFixed(0) ?? '—') +
+          ' &nbsp;|&nbsp; <strong>RMSE test:</strong> ' + (g.rmse?.toFixed(0) ?? '—') +
+          ' &nbsp;|&nbsp; <strong>R² test:</strong> ' + (g.r2?.toFixed(2) ?? '—');
+
+        document.getElementById('metric-robust').innerHTML =
+          '<strong>MAE mediana:</strong> ' + (g.mae_median?.toFixed(0) ?? '—') +
+          ' &nbsp;|&nbsp; <strong>MAPE mediana:</strong> ' + (g.mape_median?.toFixed(1) ?? '—') + '%' +
+          (g.without_top_outlier
+            ? ' &nbsp;|&nbsp; <strong>MAE sin outlier extremo:</strong> ' + g.without_top_outlier.mae.toFixed(0)
+            : '');
+
+        const maeFinde = wd?.mae?.toFixed(0) ?? '—';
+        const maeLabor = wdWork?.mae?.toFixed(0) ?? '—';
+        const mae2012 = yr2012?.mae?.toFixed(0) ?? '—';
+        document.getElementById('metric-segments').innerHTML =
+          '<strong>MAE fin de semana:</strong> ' + maeFinde +
+          ' &nbsp;|&nbsp; <strong>MAE laborable:</strong> ' + maeLabor +
+          ' &nbsp;|&nbsp; <strong>MAE año 2012:</strong> ' + mae2012;
+
+        if (g.r2_gap_train_test != null) {
+          document.getElementById('metric-gap').innerHTML =
+            '<strong>Gap R² train/test:</strong> ' + g.r2_gap_train_test.toFixed(2) +
+            ' (menor = menos sobreajuste)';
+        }
+      } catch (_) { /* métricas opcionales */ }
+    }
+    loadRefinedMetrics();
+
+    const MAX_YR = 3;
+    const MIN_YR = -2;
+    const YR_GROWTH_RATE = 0.25;
+
+    function effectiveYr(year) {
+      const offset = year - BASE_YEAR;
+      if (year >= 2011 && year <= 2012) return offset;
+      if (offset < 0) return MIN_YR;
+      const extra = offset - 1;
+      return Math.min(1 + extra * YR_GROWTH_RATE, MAX_YR);
+    }
+
+    function monthToSeason(month) {
+      if ([12, 1, 2, 3].includes(month)) return 1;
+      if ([4, 5, 6].includes(month)) return 2;
+      if ([7, 8, 9].includes(month)) return 3;
+      return 4;
+    }
+
+    function parsePredictionDate(dateStr, holiday) {
+      const parts = dateStr.split('-').map(Number);
+      const year = parts[0];
+      const month = parts[1];
+      const day = parts[2];
+      const date = new Date(year, month - 1, day);
+      const weekday = date.getDay();
+      const isHoliday = Number(holiday) === 1;
+      const isWorkingday = weekday >= 1 && weekday <= 5 && !isHoliday;
+
+      return {
+        dia: day,
+        mnth: month,
+        anio: year,
+        yr: effectiveYr(year),
+        yr_natural: year - BASE_YEAR,
+        weekday,
+        season: monthToSeason(month),
+        holiday: isHoliday ? 1 : 0,
+        workingday: isWorkingday ? 1 : 0
+      };
+    }
+
+    function renderDerivedDateFields() {
+      const dateInput = document.getElementById('prediction_date');
+      const holidayInput = document.getElementById('holiday');
+      const container = document.getElementById('derived-date-fields');
+      if (!dateInput.value) {
+        container.innerHTML = '';
+        return;
+      }
+      const derived = parsePredictionDate(dateInput.value, holidayInput.value || 0);
+      const extrapolated = derived.anio < 2011 || derived.anio > 2012;
+      container.innerHTML = [
+        `<span><strong>Día:</strong> ${derived.dia}</span>`,
+        `<span><strong>Mes:</strong> ${derived.mnth}</span>`,
+        `<span><strong>Año:</strong> ${derived.anio} (yr=${derived.yr.toFixed(2)})</span>`,
+        `<span><strong>Semana:</strong> ${WEEKDAY_NAMES[derived.weekday]} (${derived.weekday})</span>`,
+        `<span><strong>Temporada:</strong> ${SEASON_NAMES[derived.season]} (${derived.season})</span>`,
+        `<span><strong>Laborable:</strong> ${derived.workingday === 1 ? 'Sí' : 'No'}</span>`,
+        extrapolated ? '<span style="color:#b45309;"><strong>Extrapolación</strong> fuera de 2011–2012</span>' : ''
+      ].join('');
+    }
+
+    function setupBinaryToggle(toggleId, hiddenId, stateId, onChange) {
+      const toggle = document.getElementById(toggleId);
+      const hidden = document.getElementById(hiddenId);
+      const state = document.getElementById(stateId);
+
+      function sync() {
+        const active = toggle.checked;
+        hidden.value = active ? '1' : '0';
+        state.textContent = active ? 'Sí' : 'No';
+        if (onChange) onChange();
+      }
+
+      toggle.addEventListener('change', sync);
+      sync();
+    }
+
+    setupBinaryToggle('holiday_toggle', 'holiday', 'holiday_state', renderDerivedDateFields);
+    setupBinaryToggle('price_reduction_toggle', 'price_reduction', 'price_reduction_state');
+
+    document.getElementById('prediction_date').addEventListener('change', renderDerivedDateFields);
+    renderDerivedDateFields();
 
     const menuButtons = document.querySelectorAll('.menu button');
     const sections = document.querySelectorAll('.section');
@@ -192,8 +615,23 @@
       renderChart(importances);
     }
 
-    function renderPrediction(data) {
+    function renderPrediction(data, dateStr) {
       currentPredictionData = data;
+
+      const modeloEl = document.getElementById('pred-modelo');
+      modeloEl.textContent = data.modelo_nombre
+        ? `Modelo: ${data.modelo_nombre}`
+        : (data.modelo ? `Modelo: ${data.modelo}` : '');
+
+      const fechaEl = document.getElementById('pred-fecha');
+      const avisoEl = document.getElementById('pred-aviso');
+      if (dateStr) {
+        const derived = parsePredictionDate(dateStr, data.entrada?.holiday ?? 0);
+        fechaEl.textContent = `Fecha predicha: ${derived.dia}/${derived.mnth}/${derived.anio} (${WEEKDAY_NAMES[derived.weekday]}, ${SEASON_NAMES[derived.season]})`;
+      } else {
+        fechaEl.textContent = '';
+      }
+      avisoEl.textContent = data.aviso || '';
       
       // Mostrar las 3 predicciones
       document.getElementById('pred-casual').textContent = data.predicciones.casual.toFixed(0);
@@ -213,13 +651,52 @@
       showSection('prediccion');
     }
 
+    function closeChartLightboxes() {
+      document.querySelectorAll('.chart-zoom-layer.open').forEach(layer => {
+        layer.classList.remove('open');
+      });
+    }
+
+    document.querySelectorAll('.chart-thumb').forEach(thumb => {
+      thumb.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeChartLightboxes();
+        const layer = thumb.closest('.chart-item')?.querySelector('.chart-zoom-layer');
+        if (layer) layer.classList.add('open');
+      });
+    });
+
+    document.querySelectorAll('.chart-zoom-layer').forEach(layer => {
+      layer.addEventListener('click', () => layer.classList.remove('open'));
+      layer.querySelector('img')?.addEventListener('click', (e) => e.stopPropagation());
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeChartLightboxes();
+    });
+
     document.getElementById('f').addEventListener('submit', async (e) => {
       e.preventDefault();
       const form = new FormData(e.target);
-      const obj = {};
+      const dateStr = form.get('prediction_date');
+      const holiday = form.get('holiday') || 0;
+      const derived = parsePredictionDate(dateStr, holiday);
+
+      const obj = {
+        prediction_date: dateStr,
+        model_id: document.getElementById('model_id').value || 'default',
+        ...derived
+      };
       for (const [k, v] of form.entries()) {
+        if (k === 'prediction_date') continue;
         obj[k] = Number(v);
       }
+      obj.holiday = derived.holiday;
+      obj.workingday = derived.workingday;
+      obj.season = derived.season;
+      obj.mnth = derived.mnth;
+      obj.weekday = derived.weekday;
+      obj.yr = derived.yr;
       document.getElementById('pred-casual').textContent = 'Calculando...';
       document.getElementById('pred-registered').textContent = '...';
       document.getElementById('pred-cnt').textContent = '...';
@@ -244,7 +721,7 @@
           document.getElementById('detail-area').style.display = 'block';
           return;
         }
-        renderPrediction(data);
+        renderPrediction(data, dateStr);
       } catch (err) {
         document.getElementById('detail-content').textContent = 'Error de red o servidor: ' + err;
         document.getElementById('detail-area').style.display = 'block';

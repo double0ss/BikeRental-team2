@@ -1,73 +1,56 @@
 {
-  "targets": [
-    "casual",
-    "registered",
-    "cnt"
-  ],
-  "feature_names": [
+  "model_type": "gradient_boosting",
+  "feature_config": {
+    "name": "full_heat",
+    "cyclical": true,
+    "interaction": true,
+    "leaflets": true,
+    "heat_index": true
+  },
+  "primary_target": "cnt",
+  "selected_features": [
     "temp",
     "hum",
     "windspeed",
     "leaflets",
-    "season",
     "yr",
+    "mnth",
     "holiday",
+    "weekday",
     "workingday",
-    "weathersit",
-    "atemp",
     "price_reduction",
     "mnth_sin",
     "mnth_cos",
     "weekday_sin",
     "weekday_cos",
-    "is_weekend"
+    "temp_x_weathersit",
+    "heat_index",
+    "season_2",
+    "season_3",
+    "season_4",
+    "weathersit_2",
+    "weathersit_3"
   ],
-  "numeric_features": [
-    "temp",
-    "hum",
-    "windspeed",
-    "leaflets"
-  ],
-  "categorical_features": [
-    "season",
-    "yr",
-    "holiday",
-    "workingday",
-    "weathersit",
-    "atemp",
-    "price_reduction",
-    "mnth_sin",
-    "mnth_cos",
-    "weekday_sin",
-    "weekday_cos",
-    "is_weekend"
-  ],
-  "train_size": 480,
-  "test_size": 120,
+  "train_size": 600,
+  "experiment": "full_heat_index",
   "results": {
-    "casual": {
-      "mae_test": 920.4970902777779,
-      "rmse_test": 4879.904850035145,
-      "r2_test": 0.04791962720511411,
-      "mae_train": 148.043317639652,
-      "rmse_train": 758.5934034572524,
-      "r2_train": 0.8767671552337468
-    },
-    "registered": {
-      "mae_test": 1222.1545,
-      "rmse_test": 1344.528997927961,
-      "r2_test": 0.3072806808353401,
-      "mae_train": 150.41873263888888,
-      "rmse_train": 202.05946759970993,
-      "r2_train": 0.9779704599665102
-    },
     "cnt": {
-      "mae_test": 1858.1036820862003,
-      "rmse_test": 5279.841331243,
-      "r2_test": 0.050096873327954206,
-      "mae_train": 342.863692542833,
-      "rmse_train": 1246.7720298371,
-      "r2_train": 0.8001824633442914
+      "train": {
+        "mae": 414.33878636484815,
+        "rmse": 1649.9444050814006,
+        "r2": 0.7882728579607096,
+        "r2_adj": 0.7805803493399048
+      },
+      "cv": {
+        "mae": 1549.0875731811213,
+        "rmse": 3102.1006018616517,
+        "r2": -0.6837471669318544
+      }
     }
-  }
+  },
+  "cv_comparison": [],
+  "weekend_calibration_factor": 1.0,
+  "winsor_cap": null,
+  "ensemble_strategy": null,
+  "ensemble_members": []
 }

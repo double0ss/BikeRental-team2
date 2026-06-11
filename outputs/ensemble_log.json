@@ -1,0 +1,145 @@
+{
+  "started_at": "2026-06-10 22:10:46",
+  "members": [
+    "full_heat_index",
+    "two_stage_peak",
+    "weekend_interactions",
+    "winsorize_plus_huber"
+  ],
+  "oof_weights": {
+    "full_heat_index": 0.23882123234593214,
+    "two_stage_peak": 0.24968744164019033,
+    "weekend_interactions": 0.2515480820476046,
+    "winsorize_plus_huber": 0.259943243966273
+  },
+  "oof_segment_routing": {
+    "workingday_0": "winsorize_plus_huber",
+    "workingday_1": "winsorize_plus_huber",
+    "yr_1": "winsorize_plus_huber"
+  },
+  "cv_candidates": [
+    {
+      "strategy": "individual:full_heat_index",
+      "cv_composite_score": 1726.8036831946022,
+      "cv_mae": 1760.581264989373,
+      "cv_r2": 0.07080733350503343,
+      "composite_detail": {
+        "score": 1726.8036831946022,
+        "mae_global": 1760.581264989373,
+        "mae_weekend": 2102.5250933635325,
+        "mae_yr2012": 1915.160281067572,
+        "rmse_outlier_pct": 87.81592976278988
+      }
+    },
+    {
+      "strategy": "individual:two_stage_peak",
+      "cv_composite_score": 1671.0560320523873,
+      "cv_mae": 1683.9620950779006,
+      "cv_r2": 0.08543689935672327,
+      "composite_detail": {
+        "score": 1671.0560320523873,
+        "mae_global": 1683.9620950779006,
+        "mae_weekend": 2023.819106220152,
+        "mae_yr2012": 1907.8140661773662,
+        "rmse_outlier_pct": 87.62648919708225
+      }
+    },
+    {
+      "strategy": "individual:weekend_interactions",
+      "cv_composite_score": 1657.0951718814215,
+      "cv_mae": 1671.5062341744429,
+      "cv_r2": 0.09111085858565438,
+      "composite_detail": {
+        "score": 1657.0951718814215,
+        "mae_global": 1671.5062341744429,
+        "mae_weekend": 1979.440583402995,
+        "mae_yr2012": 1929.7272887265067,
+        "rmse_outlier_pct": 87.15045445444497
+      }
+    },
+    {
+      "strategy": "individual:winsorize_plus_huber",
+      "cv_composite_score": 1596.560493091388,
+      "cv_mae": 1617.5230443125283,
+      "cv_r2": 0.10832379881580412,
+      "composite_detail": {
+        "score": 1596.560493091388,
+        "mae_global": 1617.5230443125283,
+        "mae_weekend": 1931.2508838192578,
+        "mae_yr2012": 1807.3453999111696,
+        "rmse_outlier_pct": 87.06930238365271
+      }
+    },
+    {
+      "strategy": "weighted_average",
+      "cv_composite_score": 1639.4765532144067,
+      "cv_mae": 1658.5940634186534,
+      "cv_r2": 0.09513355500236031,
+      "composite_detail": {
+        "score": 1639.4765532144067,
+        "mae_global": 1658.5940634186534,
+        "mae_weekend": 1978.0708777080547,
+        "mae_yr2012": 1869.38575841659,
+        "rmse_outlier_pct": 87.40512851210954
+      }
+    },
+    {
+      "strategy": "median",
+      "cv_composite_score": 1631.7867094685748,
+      "cv_mae": 1650.624220626383,
+      "cv_r2": 0.09764584137523757,
+      "composite_detail": {
+        "score": 1631.7867094685748,
+        "mae_global": 1650.624220626383,
+        "mae_weekend": 1965.2465443457331,
+        "mae_yr2012": 1866.153703845322,
+        "rmse_outlier_pct": 87.32317145237486
+      }
+    },
+    {
+      "strategy": "segment_routing",
+      "cv_composite_score": 1596.560493091388,
+      "cv_mae": 1617.5230443125283,
+      "cv_r2": 0.10832379881580412,
+      "composite_detail": {
+        "score": 1596.560493091388,
+        "mae_global": 1617.5230443125283,
+        "mae_weekend": 1931.2508838192578,
+        "mae_yr2012": 1807.3453999111696,
+        "rmse_outlier_pct": 87.06930238365271
+      }
+    }
+  ],
+  "selected_by_cv": "individual:winsorize_plus_huber",
+  "deployed_as_ensemble": false,
+  "deployed_model": "full_heat_index",
+  "test_metrics": {
+    "strategy_deployed": "full_heat_index",
+    "model_type": "gradient_boosting",
+    "global": {
+      "mae": 692.0088444420758,
+      "rmse": 1720.1454008322162,
+      "r2": 0.6956090074243644,
+      "r2_adj": 0.6369648712400676,
+      "mae_median": 445.685756837868,
+      "mape_median": 9.916437353313706,
+      "outlier_mae": 17787.617108968076,
+      "outlier_count": 1,
+      "without_top_outlier": {
+        "mae": 560.5041654841835,
+        "rmse": 740.1486533917965,
+        "r2": 0.8574640757378481,
+        "r2_adj": 0.8563505138295501
+      },
+      "r2_gap_train_test": 0.09266385053634518
+    },
+    "composite_score": {
+      "score": 816.248889575349,
+      "mae_global": 692.0088444420758,
+      "mae_weekend": 1148.7701910947674,
+      "mae_yr2012": 946.6823107512672,
+      "rmse_outlier_pct": 54.778323198349575
+    }
+  },
+  "finished_at": "2026-06-10 22:10:46"
+}

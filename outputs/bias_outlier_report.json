@@ -1,0 +1,1197 @@
+{
+  "train": {
+    "label": "train",
+    "path": "data/BikeRentalDaily_train.csv",
+    "rows": 600,
+    "missing_raw": {
+      "columns_with_missing": {
+        "season": 62,
+        "hum": 34
+      },
+      "total_rows": 600
+    },
+    "outliers": {
+      "cnt": {
+        "iqr": {
+          "method": "IQR",
+          "column": "cnt",
+          "q1": 3135.0,
+          "q3": 5909.5,
+          "lower_bound": -1026.75,
+          "upper_bound": 10071.25,
+          "count": 4,
+          "pct": 0.6666666666666667,
+          "indices": [
+            373,
+            419,
+            516,
+            522
+          ],
+          "values": [
+            32043,
+            42945,
+            35932,
+            53021
+          ]
+        },
+        "zscore": {
+          "method": "zscore",
+          "column": "cnt",
+          "threshold": 3.0,
+          "count": 4,
+          "pct": 0.6666666666666667,
+          "indices": [
+            373,
+            419,
+            516,
+            522
+          ],
+          "values": [
+            32043,
+            42945,
+            35932,
+            53021
+          ]
+        },
+        "distribution": {
+          "mean": 4705.011666666666,
+          "median": 4530.0,
+          "std": 3588.750427504735,
+          "min": 22.0,
+          "max": 53021.0,
+          "skewness": 7.8751124705446545,
+          "kurtosis": 88.8979586248083
+        }
+      },
+      "temp": {
+        "iqr": {
+          "method": "IQR",
+          "column": "temp",
+          "q1": 13.575,
+          "q3": 26.0583,
+          "lower_bound": -5.1499500000000005,
+          "upper_bound": 44.783249999999995,
+          "count": 0,
+          "pct": 0.0,
+          "indices": [],
+          "values": []
+        },
+        "zscore": {
+          "method": "zscore",
+          "column": "temp",
+          "threshold": 3.0,
+          "count": 0,
+          "pct": 0.0,
+          "indices": [],
+          "values": []
+        },
+        "distribution": {
+          "mean": 19.808284,
+          "median": 20.1,
+          "std": 7.206842636227711,
+          "min": 2.3652,
+          "max": 34.4667,
+          "skewness": -0.06653429146785807,
+          "kurtosis": -1.1130113697241237
+        }
+      },
+      "hum": {
+        "iqr": {
+          "method": "IQR",
+          "column": "hum",
+          "q1": 78.3593625,
+          "q3": 100.0,
+          "lower_bound": 45.89840625000001,
+          "upper_bound": 132.46095624999998,
+          "count": 5,
+          "pct": 0.8333333333333334,
+          "indices": [
+            39,
+            69,
+            125,
+            383,
+            384
+          ],
+          "values": [
+            28.18755,
+            45.3261,
+            45.75,
+            38.12505,
+            41.37495
+          ]
+        },
+        "zscore": {
+          "method": "zscore",
+          "column": "hum",
+          "threshold": 3.0,
+          "count": 5,
+          "pct": 0.8333333333333334,
+          "indices": [
+            39,
+            69,
+            125,
+            383,
+            384
+          ],
+          "values": [
+            28.18755,
+            45.3261,
+            45.75,
+            38.12505,
+            41.37495
+          ]
+        },
+        "distribution": {
+          "mean": 88.05707866666667,
+          "median": 93.2568,
+          "std": 13.92292295509552,
+          "min": 28.18755,
+          "max": 100.0,
+          "skewness": -1.1263861370218502,
+          "kurtosis": 0.68132601030069
+        }
+      },
+      "windspeed": {
+        "iqr": {
+          "method": "IQR",
+          "column": "windspeed",
+          "q1": 0.134953,
+          "q3": 0.23394674999999998,
+          "lower_bound": -0.013537624999999998,
+          "upper_bound": 0.38243737499999997,
+          "count": 12,
+          "pct": 2.0,
+          "indices": [
+            34,
+            39,
+            74,
+            239,
+            318,
+            340,
+            351,
+            360,
+            361,
+            375,
+            548,
+            591
+          ],
+          "values": [
+            0.417908,
+            0.507463,
+            0.388067,
+            0.422275,
+            0.415429,
+            0.4092119999999999,
+            0.421642,
+            0.441563,
+            0.4148,
+            0.386821,
+            0.398008,
+            0.407346
+          ]
+        },
+        "zscore": {
+          "method": "zscore",
+          "column": "windspeed",
+          "threshold": 3.0,
+          "count": 2,
+          "pct": 0.33333333333333337,
+          "indices": [
+            39,
+            360
+          ],
+          "values": [
+            0.507463,
+            0.441563
+          ]
+        },
+        "distribution": {
+          "mean": 0.19157354416666666,
+          "median": 0.181598,
+          "std": 0.07918792454792258,
+          "min": 0.0223917,
+          "max": 0.507463,
+          "skewness": 0.6931856024252521,
+          "kurtosis": 0.3906553231574392
+        }
+      },
+      "leaflets": {
+        "iqr": {
+          "method": "IQR",
+          "column": "leaflets",
+          "q1": 600.75,
+          "q3": 875.5,
+          "lower_bound": 188.625,
+          "upper_bound": 1287.625,
+          "count": 0,
+          "pct": 0.0,
+          "indices": [],
+          "values": []
+        },
+        "zscore": {
+          "method": "zscore",
+          "column": "leaflets",
+          "threshold": 3.0,
+          "count": 0,
+          "pct": 0.0,
+          "indices": [],
+          "values": []
+        },
+        "distribution": {
+          "mean": 740.065,
+          "median": 737.0,
+          "std": 164.4300951833433,
+          "min": 459.0,
+          "max": 1032.0,
+          "skewness": 0.05480174836375147,
+          "kurtosis": -1.1587750448488074
+        }
+      },
+      "casual": {
+        "iqr": {
+          "method": "IQR",
+          "column": "casual",
+          "q1": 313.0,
+          "q3": 1078.0,
+          "lower_bound": -834.5,
+          "upper_bound": 2225.5,
+          "count": 47,
+          "pct": 7.833333333333334,
+          "indices": [
+            121,
+            151,
+            152,
+            162,
+            201,
+            232,
+            233,
+            368,
+            373,
+            378,
+            379,
+            383,
+            384,
+            389,
+            390,
+            395,
+            401,
+            406,
+            413,
+            419,
+            420,
+            425,
+            426,
+            427,
+            432,
+            433,
+            439,
+            444,
+            445,
+            451,
+            452,
+            460,
+            466,
+            478,
+            482,
+            487,
+            492,
+            502,
+            503,
+            510,
+            516,
+            522,
+            523,
+            533,
+            538,
+            542,
+            562
+          ],
+          "values": [
+            2355,
+            2282,
+            3065,
+            2418,
+            2521,
+            2235,
+            2397,
+            3155,
+            26150,
+            2301,
+            2347,
+            3252,
+            2230,
+            2795,
+            2846,
+            2541,
+            2229,
+            2496,
+            2622,
+            38061,
+            2704,
+            2855,
+            3283,
+            2557,
+            2795,
+            2494,
+            2708,
+            2963,
+            2634,
+            2657,
+            2551,
+            2562,
+            2355,
+            2234,
+            2345,
+            2247,
+            2827,
+            2352,
+            2613,
+            2570,
+            30378,
+            47138,
+            2454,
+            3031,
+            2252,
+            2806,
+            2290
+          ]
+        },
+        "zscore": {
+          "method": "zscore",
+          "column": "casual",
+          "threshold": 3.0,
+          "count": 4,
+          "pct": 0.6666666666666667,
+          "indices": [
+            373,
+            419,
+            516,
+            522
+          ],
+          "values": [
+            26150,
+            38061,
+            30378,
+            47138
+          ]
+        },
+        "distribution": {
+          "mean": 1070.895,
+          "median": 722.0,
+          "std": 2971.3161539604484,
+          "min": 2.0,
+          "max": 47138.0,
+          "skewness": 12.061083945442805,
+          "kurtosis": 158.1072882278335
+        }
+      },
+      "registered": {
+        "iqr": {
+          "method": "IQR",
+          "column": "registered",
+          "q1": 2499.0,
+          "q3": 4680.25,
+          "lower_bound": -772.875,
+          "upper_bound": 7952.125,
+          "count": 0,
+          "pct": 0.0,
+          "indices": [],
+          "values": []
+        },
+        "zscore": {
+          "method": "zscore",
+          "column": "registered",
+          "threshold": 3.0,
+          "count": 0,
+          "pct": 0.0,
+          "indices": [],
+          "values": []
+        },
+        "distribution": {
+          "mean": 3634.116666666667,
+          "median": 3657.0,
+          "std": 1538.6982540176887,
+          "min": 20.0,
+          "max": 6946.0,
+          "skewness": 0.06028079340931444,
+          "kurtosis": -0.6378098887158261
+        }
+      }
+    },
+    "categorical_bias": {
+      "season": {
+        "column": "season",
+        "counts": {
+          "1": 164,
+          "2": 154,
+          "3": 151,
+          "4": 131
+        },
+        "proportions": {
+          "1": 0.2733333333333333,
+          "2": 0.25666666666666665,
+          "3": 0.25166666666666665,
+          "4": 0.21833333333333332
+        },
+        "dominant_class": "1",
+        "dominant_pct": 0.2733333333333333,
+        "has_bias": false
+      },
+      "yr": {
+        "column": "yr",
+        "counts": {
+          "0": 302,
+          "1": 298
+        },
+        "proportions": {
+          "0": 0.5033333333333333,
+          "1": 0.49666666666666665
+        },
+        "dominant_class": "0",
+        "dominant_pct": 0.5033333333333333,
+        "has_bias": false
+      },
+      "mnth": {
+        "column": "mnth",
+        "counts": {
+          "1": 52,
+          "2": 49,
+          "3": 47,
+          "4": 49,
+          "5": 56,
+          "6": 53,
+          "7": 45,
+          "8": 49,
+          "9": 53,
+          "10": 47,
+          "11": 54,
+          "12": 46
+        },
+        "proportions": {
+          "1": 0.08666666666666667,
+          "2": 0.08166666666666667,
+          "3": 0.07833333333333334,
+          "4": 0.08166666666666667,
+          "5": 0.09333333333333334,
+          "6": 0.08833333333333333,
+          "7": 0.075,
+          "8": 0.08166666666666667,
+          "9": 0.08833333333333333,
+          "10": 0.07833333333333334,
+          "11": 0.09,
+          "12": 0.07666666666666666
+        },
+        "dominant_class": "5",
+        "dominant_pct": 0.09333333333333334,
+        "has_bias": false
+      },
+      "holiday": {
+        "column": "holiday",
+        "counts": {
+          "0": 582,
+          "1": 18
+        },
+        "proportions": {
+          "0": 0.97,
+          "1": 0.03
+        },
+        "dominant_class": "0",
+        "dominant_pct": 0.97,
+        "has_bias": true
+      },
+      "weekday": {
+        "column": "weekday",
+        "counts": {
+          "0": 84,
+          "1": 85,
+          "2": 83,
+          "3": 87,
+          "4": 88,
+          "5": 83,
+          "6": 90
+        },
+        "proportions": {
+          "0": 0.14,
+          "1": 0.14166666666666666,
+          "2": 0.13833333333333334,
+          "3": 0.145,
+          "4": 0.14666666666666667,
+          "5": 0.13833333333333334,
+          "6": 0.15
+        },
+        "dominant_class": "6",
+        "dominant_pct": 0.15,
+        "has_bias": false
+      },
+      "workingday": {
+        "column": "workingday",
+        "counts": {
+          "0": 192,
+          "1": 408
+        },
+        "proportions": {
+          "0": 0.32,
+          "1": 0.68
+        },
+        "dominant_class": "1",
+        "dominant_pct": 0.68,
+        "has_bias": true
+      },
+      "weathersit": {
+        "column": "weathersit",
+        "counts": {
+          "1": 375,
+          "2": 209,
+          "3": 16
+        },
+        "proportions": {
+          "1": 0.625,
+          "2": 0.34833333333333333,
+          "3": 0.02666666666666667
+        },
+        "dominant_class": "1",
+        "dominant_pct": 0.625,
+        "has_bias": false
+      },
+      "price_reduction": {
+        "column": "price_reduction",
+        "counts": {
+          "0": 510,
+          "1": 90
+        },
+        "proportions": {
+          "0": 0.85,
+          "1": 0.15
+        },
+        "dominant_class": "0",
+        "dominant_pct": 0.85,
+        "has_bias": true
+      }
+    },
+    "temporal_bias": {
+      "cnt_by_month": {
+        "1": 2313.5,
+        "2": 2710.67,
+        "3": 4306.77,
+        "4": 4401.2,
+        "5": 5972.93,
+        "6": 5793.32,
+        "7": 5575.31,
+        "8": 5540.51,
+        "9": 7083.83,
+        "10": 5131.11,
+        "11": 4234.43,
+        "12": 3100.8
+      },
+      "cnt_by_season": {
+        "1": 2776.16,
+        "2": 5442.68,
+        "3": 6096.09,
+        "4": 4649.11
+      },
+      "cnt_by_year": {
+        "0": 3429.66,
+        "1": 5997.48
+      },
+      "month_demand_range": 4770.33,
+      "peak_month": 9,
+      "low_month": 1,
+      "temporal_bias_note": "Demanda muy estacional: picos en verano/oto\u00f1o y m\u00ednimos en invierno."
+    },
+    "top_cnt_rows": [
+      {
+        "dteday": "2012-09-22",
+        "cnt": 53021,
+        "temp": 26.0,
+        "hum": 97.00005,
+        "weathersit": 1,
+        "holiday": 0,
+        "price_reduction": 0,
+        "season": 3
+      },
+      {
+        "dteday": "2012-05-19",
+        "cnt": 42945,
+        "temp": 24.0,
+        "hum": 68.4375,
+        "weathersit": 1,
+        "holiday": 0,
+        "price_reduction": 0,
+        "season": 2
+      },
+      {
+        "dteday": "2012-09-15",
+        "cnt": 35932,
+        "temp": 24.3333,
+        "hum": 75.25005,
+        "weathersit": 1,
+        "holiday": 0,
+        "price_reduction": 0,
+        "season": 3
+      },
+      {
+        "dteday": "2012-03-23",
+        "cnt": 32043,
+        "temp": 24.0667,
+        "hum": 100.0,
+        "weathersit": 2,
+        "holiday": 0,
+        "price_reduction": 1,
+        "season": 2
+      },
+      {
+        "dteday": "2012-09-09",
+        "cnt": 8227,
+        "temp": 24.4,
+        "hum": 82.125,
+        "weathersit": 1,
+        "holiday": 0,
+        "price_reduction": 0,
+        "season": 3
+      }
+    ],
+    "recommendations": [
+      "cnt tiene 4 outliers IQR (m\u00e1x. 53021). Se aplicar\u00e1 transformaci\u00f3n log1p(cnt) para reducir su impacto.",
+      "cnt presenta asimetr\u00eda alta (skew=7.88); la escala logar\u00edtmica es adecuada.",
+      "Sesgo en weathersit: 62% de d\u00edas con clima '1'.",
+      "weathersit=4 (lluvia fuerte) no aparece en train; el modelo no podr\u00e1 aprender ese patr\u00f3n.",
+      "Sesgo d\u00eda laborable: 68% son d\u00edas laborables.",
+      "Promociones raras: solo 15% de d\u00edas con price_reduction=1.",
+      "Demanda muy estacional: picos en verano/oto\u00f1o y m\u00ednimos en invierno.",
+      "Variables continuas se normalizan con StandardScaler antes del entrenamiento."
+    ]
+  },
+  "test": {
+    "label": "test",
+    "path": "tests/BikeRentalDaily_test.csv",
+    "rows": 131,
+    "missing_raw": {
+      "columns_with_missing": {
+        "season": 11,
+        "hum": 6
+      },
+      "total_rows": 132
+    },
+    "outliers": {
+      "cnt": {
+        "iqr": {
+          "method": "IQR",
+          "column": "cnt",
+          "q1": 3269.0,
+          "q3": 6172.5,
+          "lower_bound": -1086.25,
+          "upper_bound": 10527.75,
+          "count": 1,
+          "pct": 0.7633587786259541,
+          "indices": [
+            109
+          ],
+          "values": [
+            32472
+          ]
+        },
+        "zscore": {
+          "method": "zscore",
+          "column": "cnt",
+          "threshold": 3.0,
+          "count": 1,
+          "pct": 0.7633587786259541,
+          "indices": [
+            109
+          ],
+          "values": [
+            32472
+          ]
+        },
+        "distribution": {
+          "mean": 4761.564885496183,
+          "median": 4672.0,
+          "std": 3129.7758265734687,
+          "min": 431.0,
+          "max": 32472.0,
+          "skewness": 5.229756159639221,
+          "kurtosis": 44.97233253457494
+        }
+      },
+      "temp": {
+        "iqr": {
+          "method": "IQR",
+          "column": "temp",
+          "q1": 13.2,
+          "q3": 27.53335,
+          "lower_bound": -8.300025000000002,
+          "upper_bound": 49.033375,
+          "count": 0,
+          "pct": 0.0,
+          "indices": [],
+          "values": []
+        },
+        "zscore": {
+          "method": "zscore",
+          "column": "temp",
+          "threshold": 3.0,
+          "count": 0,
+          "pct": 0.0,
+          "indices": [],
+          "values": []
+        },
+        "distribution": {
+          "mean": 19.847946564885497,
+          "median": 19.0333,
+          "std": 7.857175277759203,
+          "min": 3.8957,
+          "max": 33.9333,
+          "skewness": -0.012670712571151342,
+          "kurtosis": -1.1775945104130165
+        }
+      },
+      "hum": {
+        "iqr": {
+          "method": "IQR",
+          "column": "hum",
+          "q1": 80.8125,
+          "q3": 100.0,
+          "lower_bound": 52.03125,
+          "upper_bound": 128.78125,
+          "count": 2,
+          "pct": 1.5267175572519083,
+          "indices": [
+            13,
+            75
+          ],
+          "values": [
+            0.0,
+            43.5
+          ]
+        },
+        "zscore": {
+          "method": "zscore",
+          "column": "hum",
+          "threshold": 3.0,
+          "count": 2,
+          "pct": 1.5267175572519083,
+          "indices": [
+            13,
+            75
+          ],
+          "values": [
+            0.0,
+            43.5
+          ]
+        },
+        "distribution": {
+          "mean": 88.33821335877862,
+          "median": 93.43755,
+          "std": 14.804969226307643,
+          "min": 0.0,
+          "max": 100.0,
+          "skewness": -2.218755987218708,
+          "kurtosis": 8.520511474905312
+        }
+      },
+      "windspeed": {
+        "iqr": {
+          "method": "IQR",
+          "column": "windspeed",
+          "q1": 0.135583,
+          "q3": 0.22729549999999998,
+          "lower_bound": -0.001985749999999953,
+          "upper_bound": 0.36486424999999995,
+          "count": 2,
+          "pct": 1.5267175572519083,
+          "indices": [
+            19,
+            42
+          ],
+          "values": [
+            0.385571,
+            0.375617
+          ]
+        },
+        "zscore": {
+          "method": "zscore",
+          "column": "windspeed",
+          "threshold": 3.0,
+          "count": 0,
+          "pct": 0.0,
+          "indices": [],
+          "values": []
+        },
+        "distribution": {
+          "mean": 0.18562956641221373,
+          "median": 0.179725,
+          "std": 0.06859521929783066,
+          "min": 0.0423042,
+          "max": 0.385571,
+          "skewness": 0.49051141909864265,
+          "kurtosis": 0.1542054185947639
+        }
+      },
+      "leaflets": {
+        "iqr": {
+          "method": "IQR",
+          "column": "leaflets",
+          "q1": 582.0,
+          "q3": 919.0,
+          "lower_bound": 76.5,
+          "upper_bound": 1424.5,
+          "count": 0,
+          "pct": 0.0,
+          "indices": [],
+          "values": []
+        },
+        "zscore": {
+          "method": "zscore",
+          "column": "leaflets",
+          "threshold": 3.0,
+          "count": 0,
+          "pct": 0.0,
+          "indices": [],
+          "values": []
+        },
+        "distribution": {
+          "mean": 750.6564885496183,
+          "median": 748.0,
+          "std": 178.73275155048006,
+          "min": 458.0,
+          "max": 1028.0,
+          "skewness": 0.08205706177524044,
+          "kurtosis": -1.3598144565083787
+        }
+      },
+      "casual": {
+        "iqr": {
+          "method": "IQR",
+          "column": "casual",
+          "q1": 330.5,
+          "q3": 1139.0,
+          "lower_bound": -882.25,
+          "upper_bound": 2351.75,
+          "count": 3,
+          "pct": 2.2900763358778624,
+          "indices": [
+            94,
+            109,
+            117
+          ],
+          "values": [
+            2544,
+            26506,
+            2643
+          ]
+        },
+        "zscore": {
+          "method": "zscore",
+          "column": "casual",
+          "threshold": 3.0,
+          "count": 1,
+          "pct": 0.7633587786259541,
+          "indices": [
+            109
+          ],
+          "values": [
+            26506
+          ]
+        },
+        "distribution": {
+          "mean": 1004.3740458015267,
+          "median": 695.0,
+          "std": 2321.343862559848,
+          "min": 9.0,
+          "max": 26506.0,
+          "skewness": 10.235590946667248,
+          "kurtosis": 109.91342058419191
+        }
+      },
+      "registered": {
+        "iqr": {
+          "method": "IQR",
+          "column": "registered",
+          "q1": 2516.5,
+          "q3": 5116.0,
+          "lower_bound": -1382.75,
+          "upper_bound": 9015.25,
+          "count": 0,
+          "pct": 0.0,
+          "indices": [],
+          "values": []
+        },
+        "zscore": {
+          "method": "zscore",
+          "column": "registered",
+          "threshold": 3.0,
+          "count": 0,
+          "pct": 0.0,
+          "indices": [],
+          "values": []
+        },
+        "distribution": {
+          "mean": 3757.1908396946565,
+          "median": 3722.0,
+          "std": 1657.837985563421,
+          "min": 416.0,
+          "max": 6803.0,
+          "skewness": -0.04284340663662034,
+          "kurtosis": -1.0059764682348338
+        }
+      }
+    },
+    "categorical_bias": {
+      "season": {
+        "column": "season",
+        "counts": {
+          "1": 28,
+          "2": 30,
+          "3": 35,
+          "4": 38
+        },
+        "proportions": {
+          "1": 0.21374045801526717,
+          "2": 0.22900763358778625,
+          "3": 0.26717557251908397,
+          "4": 0.2900763358778626
+        },
+        "dominant_class": "4",
+        "dominant_pct": 0.2900763358778626,
+        "has_bias": false
+      },
+      "yr": {
+        "column": "yr",
+        "counts": {
+          "0": 63,
+          "1": 68
+        },
+        "proportions": {
+          "0": 0.48091603053435117,
+          "1": 0.5190839694656488
+        },
+        "dominant_class": "1",
+        "dominant_pct": 0.5190839694656488,
+        "has_bias": false
+      },
+      "mnth": {
+        "column": "mnth",
+        "counts": {
+          "1": 10,
+          "2": 8,
+          "3": 15,
+          "4": 11,
+          "5": 6,
+          "6": 7,
+          "7": 17,
+          "8": 13,
+          "9": 7,
+          "10": 15,
+          "11": 6,
+          "12": 16
+        },
+        "proportions": {
+          "1": 0.07633587786259542,
+          "2": 0.061068702290076333,
+          "3": 0.11450381679389313,
+          "4": 0.08396946564885496,
+          "5": 0.04580152671755725,
+          "6": 0.05343511450381679,
+          "7": 0.1297709923664122,
+          "8": 0.09923664122137404,
+          "9": 0.05343511450381679,
+          "10": 0.11450381679389313,
+          "11": 0.04580152671755725,
+          "12": 0.12213740458015267
+        },
+        "dominant_class": "7",
+        "dominant_pct": 0.1297709923664122,
+        "has_bias": false
+      },
+      "holiday": {
+        "column": "holiday",
+        "counts": {
+          "0": 128,
+          "1": 3
+        },
+        "proportions": {
+          "0": 0.9770992366412213,
+          "1": 0.022900763358778626
+        },
+        "dominant_class": "0",
+        "dominant_pct": 0.9770992366412213,
+        "has_bias": true
+      },
+      "weekday": {
+        "column": "weekday",
+        "counts": {
+          "0": 21,
+          "1": 20,
+          "2": 21,
+          "3": 17,
+          "4": 16,
+          "5": 21,
+          "6": 15
+        },
+        "proportions": {
+          "0": 0.16030534351145037,
+          "1": 0.15267175572519084,
+          "2": 0.16030534351145037,
+          "3": 0.1297709923664122,
+          "4": 0.12213740458015267,
+          "5": 0.16030534351145037,
+          "6": 0.11450381679389313
+        },
+        "dominant_class": "0",
+        "dominant_pct": 0.16030534351145037,
+        "has_bias": false
+      },
+      "workingday": {
+        "column": "workingday",
+        "counts": {
+          "0": 39,
+          "1": 92
+        },
+        "proportions": {
+          "0": 0.29770992366412213,
+          "1": 0.7022900763358778
+        },
+        "dominant_class": "1",
+        "dominant_pct": 0.7022900763358778,
+        "has_bias": true
+      },
+      "weathersit": {
+        "column": "weathersit",
+        "counts": {
+          "1": 88,
+          "2": 38,
+          "3": 5
+        },
+        "proportions": {
+          "1": 0.6717557251908397,
+          "2": 0.2900763358778626,
+          "3": 0.03816793893129771
+        },
+        "dominant_class": "1",
+        "dominant_pct": 0.6717557251908397,
+        "has_bias": false
+      },
+      "price_reduction": {
+        "column": "price_reduction",
+        "counts": {
+          "0": 109,
+          "1": 22
+        },
+        "proportions": {
+          "0": 0.8320610687022901,
+          "1": 0.16793893129770993
+        },
+        "dominant_class": "0",
+        "dominant_pct": 0.8320610687022901,
+        "has_bias": true
+      }
+    },
+    "temporal_bias": {
+      "cnt_by_month": {
+        "1": 1463.1,
+        "2": 2316.12,
+        "3": 3345.53,
+        "4": 4857.73,
+        "5": 5308.83,
+        "6": 5613.71,
+        "7": 5532.88,
+        "8": 6131.46,
+        "9": 9472.71,
+        "10": 5412.67,
+        "11": 4362.0,
+        "12": 4274.94
+      },
+      "cnt_by_season": {
+        "1": 2210.61,
+        "2": 4770.27,
+        "3": 5767.71,
+        "4": 5707.63
+      },
+      "cnt_by_year": {
+        "0": 3291.19,
+        "1": 6123.82
+      },
+      "month_demand_range": 8009.609999999999,
+      "peak_month": 9,
+      "low_month": 1,
+      "temporal_bias_note": "Demanda muy estacional: picos en verano/oto\u00f1o y m\u00ednimos en invierno."
+    },
+    "top_cnt_rows": [
+      {
+        "dteday": "2012-09-29",
+        "cnt": 32472,
+        "temp": 21.7,
+        "hum": 81.43755,
+        "weathersit": 1,
+        "holiday": 0,
+        "price_reduction": 0,
+        "season": 4
+      },
+      {
+        "dteday": "2012-10-27",
+        "cnt": 7852,
+        "temp": 21.2,
+        "hum": 100.0,
+        "weathersit": 2,
+        "holiday": 0,
+        "price_reduction": 0,
+        "season": 4
+      },
+      {
+        "dteday": "2012-07-24",
+        "cnt": 7592,
+        "temp": 30.0333,
+        "hum": 98.25,
+        "weathersit": 1,
+        "holiday": 0,
+        "price_reduction": 1,
+        "season": 3
+      },
+      {
+        "dteday": "2012-09-19",
+        "cnt": 7591,
+        "temp": 22.1,
+        "hum": 80.50005,
+        "weathersit": 1,
+        "holiday": 0,
+        "price_reduction": 1,
+        "season": 3
+      },
+      {
+        "dteday": "2012-08-24",
+        "cnt": 7582,
+        "temp": 28.1,
+        "hum": 92.25,
+        "weathersit": 2,
+        "holiday": 0,
+        "price_reduction": 1,
+        "season": 3
+      }
+    ],
+    "recommendations": [
+      "cnt tiene 1 outliers IQR (m\u00e1x. 32472). Se aplicar\u00e1 transformaci\u00f3n log1p(cnt) para reducir su impacto.",
+      "cnt presenta asimetr\u00eda alta (skew=5.23); la escala logar\u00edtmica es adecuada.",
+      "Sesgo en weathersit: 67% de d\u00edas con clima '1'.",
+      "weathersit=4 (lluvia fuerte) no aparece en train; el modelo no podr\u00e1 aprender ese patr\u00f3n.",
+      "Sesgo d\u00eda laborable: 70% son d\u00edas laborables.",
+      "Promociones raras: solo 17% de d\u00edas con price_reduction=1.",
+      "Demanda muy estacional: picos en verano/oto\u00f1o y m\u00ednimos en invierno.",
+      "Variables continuas se normalizan con StandardScaler antes del entrenamiento."
+    ]
+  },
+  "summary": {
+    "train_cnt_outliers_iqr": 4,
+    "train_cnt_skewness": 7.8751124705446545,
+    "test_cnt_outliers_iqr": 1,
+    "recommendations": [
+      "cnt tiene 4 outliers IQR (m\u00e1x. 53021). Se aplicar\u00e1 transformaci\u00f3n log1p(cnt) para reducir su impacto.",
+      "cnt presenta asimetr\u00eda alta (skew=7.88); la escala logar\u00edtmica es adecuada.",
+      "Sesgo en weathersit: 62% de d\u00edas con clima '1'.",
+      "weathersit=4 (lluvia fuerte) no aparece en train; el modelo no podr\u00e1 aprender ese patr\u00f3n.",
+      "Sesgo d\u00eda laborable: 68% son d\u00edas laborables.",
+      "Promociones raras: solo 15% de d\u00edas con price_reduction=1.",
+      "Demanda muy estacional: picos en verano/oto\u00f1o y m\u00ednimos en invierno.",
+      "Variables continuas se normalizan con StandardScaler antes del entrenamiento."
+    ]
+  }
+}
