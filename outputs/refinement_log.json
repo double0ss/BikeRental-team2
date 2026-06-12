@@ -1,5 +1,5 @@
 {
-  "started_at": "2026-06-10 21:41:53",
+  "started_at": "2026-06-10 23:10:45",
   "experiments": [
     {
       "iteration": 1,
@@ -930,7 +930,7 @@
       "name": "weekend_calibration",
       "phase": 2,
       "hypothesis": "Calibraci\u00f3n multiplicativa para workingday=0 aprendida en CV",
-      "elapsed_sec": 1.1,
+      "elapsed_sec": 1.0,
       "test_metrics": {
         "mae": 825.5753072628745,
         "rmse": 2002.206655045924,
@@ -1885,5 +1885,5 @@
       "Variables continuas se normalizan con StandardScaler antes del entrenamiento."
     ]
   },
-  "finished_at": "2026-06-10 21:42:04"
+  "finished_at": "2026-06-10 23:10:55"
 }
