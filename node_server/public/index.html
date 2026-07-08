@@ -24,7 +24,14 @@
     table th, table td { text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }
     .hint { color: #555; font-size: 14px; margin-top: 10px; }
     .date-card { grid-column: 1 / -1; background: #f0f8ff; border: 1px solid #b8d4f8; border-radius: 10px; padding: 14px; }
-    .date-card input[type="date"] { font-size: 16px; cursor: pointer; }
+    .date-parts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .date-parts label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; }
+    .date-parts input, .date-parts select { font-size: 16px; width: 100%; }
     .derived-fields { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
     .derived-fields span { background: #fff; border: 1px solid #d0e3ff; border-radius: 6px; padding: 6px 10px; font-size: 13px; color: #333; }
     .derived-fields strong { color: #1f59d3; }
@@ -177,10 +184,34 @@
         </label>
         <div class="grid">
           <div class="date-card">
-            <label>Fecha a predecir:
-              <input id="prediction_date" name="prediction_date" type="date" required />
-            </label>
-            <p class="hint">Selecciona cualquier fecha. Se calculan automáticamente día, mes, año, temporada y día laborable. Para años fuera de 2011–2012 se aplica una extrapolación amortiguada de la tendencia anual.</p>
+            <span style="display:block; font-weight:600;">Fecha a predecir</span>
+            <div class="date-parts">
+              <label>Día
+                <input id="prediction_day" type="number" min="1" max="31" step="1" required />
+              </label>
+              <label>Mes
+                <select id="prediction_month" required>
+                  <option value="1">Enero</option>
+                  <option value="2">Febrero</option>
+                  <option value="3">Marzo</option>
+                  <option value="4">Abril</option>
+                  <option value="5">Mayo</option>
+                  <option value="6">Junio</option>
+                  <option value="7">Julio</option>
+                  <option value="8">Agosto</option>
+                  <option value="9">Septiembre</option>
+                  <option value="10">Octubre</option>
+                  <option value="11">Noviembre</option>
+                  <option value="12">Diciembre</option>
+                </select>
+              </label>
+              <label>Año
+                <input id="prediction_year" type="number" min="1" max="9999" step="1" required />
+              </label>
+            </div>
+            <input id="prediction_date" name="prediction_date" type="hidden" required />
+            <p class="hint">Puedes introducir cualquier fecha (cualquier año). Se calculan automáticamente temporada, día de la semana y si es laborable. Fuera de 2011–2012 se aplica extrapolación amortiguada de la tendencia anual.</p>
+            <p id="date-error" class="hint" style="color:#b91c1c; display:none;"></p>
             <div id="derived-date-fields" class="derived-fields"></div>
           </div>
           <label>Temperatura (°C): <input name="temp" value="24.8" step="0.1" type="number" /></label>
@@ -383,7 +414,51 @@
       return local.toISOString().slice(0, 10);
     }
 
-    document.getElementById('prediction_date').value = todayIsoDate();
+    function pad2(n) {
+      return String(n).padStart(2, '0');
+    }
+
+    function isValidCalendarDate(year, month, day) {
+      if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) return false;
+      if (year < 1 || year > 9999 || month < 1 || month > 12 || day < 1 || day > 31) return false;
+      const date = new Date(0);
+      date.setFullYear(year, month - 1, day);
+      return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+    }
+
+    function readPredictionParts() {
+      const year = Number(document.getElementById('prediction_year').value);
+      const month = Number(document.getElementById('prediction_month').value);
+      const day = Number(document.getElementById('prediction_day').value);
+      return { year, month, day };
+    }
+
+    function setPredictionParts(year, month, day) {
+      document.getElementById('prediction_year').value = year;
+      document.getElementById('prediction_month').value = String(month);
+      document.getElementById('prediction_day').value = day;
+      syncPredictionDate();
+    }
+
+    function syncPredictionDate() {
+      const { year, month, day } = readPredictionParts();
+      const hidden = document.getElementById('prediction_date');
+      const errorEl = document.getElementById('date-error');
+      if (!isValidCalendarDate(year, month, day)) {
+        hidden.value = '';
+        errorEl.style.display = 'block';
+        errorEl.textContent = 'Fecha inválida. Revisa día, mes y año.';
+        return null;
+      }
+      errorEl.style.display = 'none';
+      errorEl.textContent = '';
+      const iso = `${year}-${pad2(month)}-${pad2(day)}`;
+      hidden.value = iso;
+      return iso;
+    }
+
+    const todayParts = todayIsoDate().split('-').map(Number);
+    setPredictionParts(todayParts[0], todayParts[1], todayParts[2]);
 
     const MODEL_STORAGE_KEY = 'bikerental_selected_model';
 
@@ -500,7 +575,8 @@
       const year = parts[0];
       const month = parts[1];
       const day = parts[2];
-      const date = new Date(year, month - 1, day);
+      const date = new Date(0);
+      date.setFullYear(year, month - 1, day);
       const weekday = date.getDay();
       const isHoliday = Number(holiday) === 1;
       const isWorkingday = weekday >= 1 && weekday <= 5 && !isHoliday;
@@ -519,14 +595,14 @@
     }
 
     function renderDerivedDateFields() {
-      const dateInput = document.getElementById('prediction_date');
+      const dateStr = syncPredictionDate();
       const holidayInput = document.getElementById('holiday');
       const container = document.getElementById('derived-date-fields');
-      if (!dateInput.value) {
+      if (!dateStr) {
         container.innerHTML = '';
         return;
       }
-      const derived = parsePredictionDate(dateInput.value, holidayInput.value || 0);
+      const derived = parsePredictionDate(dateStr, holidayInput.value || 0);
       const extrapolated = derived.anio < 2011 || derived.anio > 2012;
       container.innerHTML = [
         `<span><strong>Día:</strong> ${derived.dia}</span>`,
@@ -558,7 +634,10 @@
     setupBinaryToggle('holiday_toggle', 'holiday', 'holiday_state', renderDerivedDateFields);
     setupBinaryToggle('price_reduction_toggle', 'price_reduction', 'price_reduction_state');
 
-    document.getElementById('prediction_date').addEventListener('change', renderDerivedDateFields);
+    ['prediction_day', 'prediction_month', 'prediction_year'].forEach(id => {
+      document.getElementById(id).addEventListener('input', renderDerivedDateFields);
+      document.getElementById(id).addEventListener('change', renderDerivedDateFields);
+    });
     renderDerivedDateFields();
 
     const menuButtons = document.querySelectorAll('.menu button');
@@ -677,8 +756,13 @@
 
     document.getElementById('f').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const dateStr = syncPredictionDate();
+      if (!dateStr) {
+        document.getElementById('detail-content').textContent = 'Fecha inválida. Introduce un día, mes y año válidos.';
+        document.getElementById('detail-area').style.display = 'block';
+        return;
+      }
       const form = new FormData(e.target);
-      const dateStr = form.get('prediction_date');
       const holiday = form.get('holiday') || 0;
       const derived = parsePredictionDate(dateStr, holiday);
 
