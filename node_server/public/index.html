@@ -110,8 +110,7 @@
       border-radius: 10px;
       border: 1px solid #ddd;
       background: #fafafa;
-    }
-    .chart-item .chart-thumb {
+      position: relative;
       cursor: zoom-in;
     }
     .chart-item .chart-thumb img {
@@ -121,7 +120,37 @@
       transition: opacity 0.2s ease;
     }
     .chart-item .chart-thumb:hover img {
-      opacity: 0.92;
+      opacity: 0.88;
+    }
+    .chart-tooltip {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      z-index: 5;
+      background: rgba(15, 23, 42, 0.92);
+      color: #f1f5f9;
+      font-size: 12.5px;
+      line-height: 1.45;
+      padding: 10px 12px;
+      border-radius: 8px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(6px);
+      transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+      pointer-events: none;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+    }
+    .chart-tooltip strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #93c5fd;
+      font-size: 13px;
+    }
+    .chart-item:hover .chart-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
     }
     .chart-zoom-layer {
       display: none;
@@ -294,56 +323,116 @@
     </div>
     <div class="card" style="margin-top: 20px;">
       <h3>Visualizaciones del dataset</h3>
-      <p class="hint">Haz clic en un gráfico para ampliarlo. Clic en el fondo oscuro o tecla Escape para cerrar.</p>
+      <p class="hint">Pasa el ratón sobre un gráfico para ver su explicación. Haz clic para ampliarlo (Escape o fondo oscuro para cerrar).</p>
       <div class="charts-grid">
         <div class="chart-item">
           <h4>Histograma de cnt</h4>
-          <div class="chart-thumb"><img src="/outputs/chart_cnt_hist.png" alt="Histograma cnt" /></div>
+          <div class="chart-thumb">
+            <img src="/outputs/chart_cnt_hist.png" alt="Histograma cnt" />
+            <div class="chart-tooltip">
+              <strong>¿Qué muestra?</strong>
+              Distribución del total de alquileres diarios (<code>cnt</code>). Indica cuántos días caen en cada rango de demanda y si hay asimetría o picos extremos.
+            </div>
+          </div>
           <div class="chart-zoom-layer"><img src="/outputs/chart_cnt_hist.png" alt="" /><span class="chart-zoom-caption">Histograma de cnt</span></div>
         </div>
         <div class="chart-item">
           <h4>Boxplot variables numéricas</h4>
-          <div class="chart-thumb"><img src="/outputs/chart_numeric_box.png" alt="Boxplot numérico" /></div>
+          <div class="chart-thumb">
+            <img src="/outputs/chart_numeric_box.png" alt="Boxplot numérico" />
+            <div class="chart-tooltip">
+              <strong>¿Qué muestra?</strong>
+              Rango, mediana y valores atípicos de variables numéricas (temp, humedad, viento, etc.). Ayuda a detectar escalas distintas y outliers antes del entrenamiento.
+            </div>
+          </div>
           <div class="chart-zoom-layer"><img src="/outputs/chart_numeric_box.png" alt="" /><span class="chart-zoom-caption">Boxplot variables numéricas</span></div>
         </div>
         <div class="chart-item">
           <h4>Boxplot de cnt</h4>
-          <div class="chart-thumb"><img src="/outputs/chart_cnt_box.png" alt="Boxplot cnt" /></div>
+          <div class="chart-thumb">
+            <img src="/outputs/chart_cnt_box.png" alt="Boxplot cnt" />
+            <div class="chart-tooltip">
+              <strong>¿Qué muestra?</strong>
+              Caja y bigotes de la demanda diaria. La caja es el 50% central; los puntos fuera de los bigotes son outliers (días con alquileres inusualmente altos o bajos).
+            </div>
+          </div>
           <div class="chart-zoom-layer"><img src="/outputs/chart_cnt_box.png" alt="" /><span class="chart-zoom-caption">Boxplot de cnt</span></div>
         </div>
         <div class="chart-item">
           <h4>cnt promedio por año</h4>
-          <div class="chart-thumb"><img src="/outputs/chart_cnt_year.png" alt="cnt promedio por año" /></div>
+          <div class="chart-thumb">
+            <img src="/outputs/chart_cnt_year.png" alt="cnt promedio por año" />
+            <div class="chart-tooltip">
+              <strong>¿Qué muestra?</strong>
+              Demanda media en 2011 (<code>yr=0</code>) frente a 2012 (<code>yr=1</code>). Refleja el crecimiento anual que el modelo debe capturar.
+            </div>
+          </div>
           <div class="chart-zoom-layer"><img src="/outputs/chart_cnt_year.png" alt="" /><span class="chart-zoom-caption">cnt promedio por año</span></div>
         </div>
         <div class="chart-item">
           <h4>cnt promedio por clima</h4>
-          <div class="chart-thumb"><img src="/outputs/chart_cnt_weather.png" alt="cnt promedio por clima" /></div>
+          <div class="chart-thumb">
+            <img src="/outputs/chart_cnt_weather.png" alt="cnt promedio por clima" />
+            <div class="chart-tooltip">
+              <strong>¿Qué muestra?</strong>
+              Alquileres medios según el tiempo: 1 despejado, 2 nublado, 3 lluvia ligera, 4 lluvia fuerte. En peor clima suele bajar la demanda.
+            </div>
+          </div>
           <div class="chart-zoom-layer"><img src="/outputs/chart_cnt_weather.png" alt="" /><span class="chart-zoom-caption">cnt promedio por clima</span></div>
         </div>
         <div class="chart-item">
           <h4>Matriz de correlación</h4>
-          <div class="chart-thumb"><img src="/outputs/chart_correlation.png" alt="Correlación" /></div>
+          <div class="chart-thumb">
+            <img src="/outputs/chart_correlation.png" alt="Correlación" />
+            <div class="chart-tooltip">
+              <strong>¿Qué muestra?</strong>
+              Relación lineal entre variables (−1 a +1). Colores intensos indican correlación fuerte (p. ej. temp/atemp o temp con <code>cnt</code>).
+            </div>
+          </div>
           <div class="chart-zoom-layer"><img src="/outputs/chart_correlation.png" alt="" /><span class="chart-zoom-caption">Matriz de correlación</span></div>
         </div>
         <div class="chart-item">
           <h4>Test externo: real vs predicho</h4>
-          <div class="chart-thumb"><img src="/outputs/test_predictions_vs_actual.png" alt="Test predicciones" /></div>
+          <div class="chart-thumb">
+            <img src="/outputs/test_predictions_vs_actual.png" alt="Test predicciones" />
+            <div class="chart-tooltip">
+              <strong>¿Qué muestra?</strong>
+              En el test externo, la demanda real frente a la predicha día a día. Cuanto más se solapan las líneas, mejor generaliza el modelo.
+            </div>
+          </div>
           <div class="chart-zoom-layer"><img src="/outputs/test_predictions_vs_actual.png" alt="" /><span class="chart-zoom-caption">Test externo: real vs predicho</span></div>
         </div>
         <div class="chart-item">
           <h4>RMSE por segmento (test)</h4>
-          <div class="chart-thumb"><img src="/outputs/test_error_by_segment.png" alt="Error por segmento" /></div>
+          <div class="chart-thumb">
+            <img src="/outputs/test_error_by_segment.png" alt="Error por segmento" />
+            <div class="chart-tooltip">
+              <strong>¿Qué muestra?</strong>
+              Error cuadrático medio (RMSE) por grupos: estación, clima, día laborable y año. Barras altas = segmentos donde el modelo falla más (p. ej. fines de semana).
+            </div>
+          </div>
           <div class="chart-zoom-layer"><img src="/outputs/test_error_by_segment.png" alt="" /><span class="chart-zoom-caption">RMSE por segmento (test)</span></div>
         </div>
         <div class="chart-item">
           <h4>Análisis sesgos y outliers</h4>
-          <div class="chart-thumb"><img src="/outputs/bias_outlier_analysis.png" alt="Sesgos y outliers" /></div>
+          <div class="chart-thumb">
+            <img src="/outputs/bias_outlier_analysis.png" alt="Sesgos y outliers" />
+            <div class="chart-tooltip">
+              <strong>¿Qué muestra?</strong>
+              Detección de sesgos y outliers en el dataset (picos de demanda, asimetría de <code>cnt</code>). Justifica el uso de log1p y modelos robustos.
+            </div>
+          </div>
           <div class="chart-zoom-layer"><img src="/outputs/bias_outlier_analysis.png" alt="" /><span class="chart-zoom-caption">Análisis sesgos y outliers</span></div>
         </div>
         <div class="chart-item">
           <h4>Sesgo categórico</h4>
-          <div class="chart-thumb"><img src="/outputs/categorical_bias.png" alt="Sesgo categórico" /></div>
+          <div class="chart-thumb">
+            <img src="/outputs/categorical_bias.png" alt="Sesgo categórico" />
+            <div class="chart-tooltip">
+              <strong>¿Qué muestra?</strong>
+              Desigualdad de clases en categorías (festivo, día laborable, clima, promoción). Clases raras o ausentes (p. ej. lluvia fuerte) limitan al modelo.
+            </div>
+          </div>
           <div class="chart-zoom-layer"><img src="/outputs/categorical_bias.png" alt="" /><span class="chart-zoom-caption">Sesgo categórico</span></div>
         </div>
       </div>

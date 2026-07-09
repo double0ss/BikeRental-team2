@@ -235,6 +235,14 @@ Modelos disponibles (si existen los archivos en `outputs/`):
 ## Resumen rápido (primera vez)
 
 ```bash
+# Opción automática (venv + servidor)
+chmod +x start_project.sh
+./start_project.sh
+```
+
+O manualmente:
+
+```bash
 # 1. Python
 python3 -m venv venv
 source venv/bin/activate          # Windows: venv\Scripts\activate
