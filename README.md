@@ -235,9 +235,12 @@ Modelos disponibles (si existen los archivos en `outputs/`):
 ## Resumen rápido (primera vez)
 
 ```bash
-# Opción automática (venv + servidor)
-chmod +x start_project.sh
-./start_project.sh
+# Opción automática (venv + servidor en segundo plano)
+chmod +x start_project.sh stop_server.sh
+./start_project.sh          # usar bash, no sh
+
+# Detener el servidor
+./stop_server.sh
 ```
 
 O manualmente:
